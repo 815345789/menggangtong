@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.VisitantMessageDao">
+    <sql id="select_visitantMessage_all">
+    visitant_Id,visitant_Name,visitant_Sex,visitant_Nation,
+	visitant_Cardtype,visitant_Cardno,visitant_Police,
+	visitant_Birth,visitant_Address,visitant_Companyname,
+	visitant_Matter,visitant_Surveyed_Id,visitant_Phone,
+	visitant_Headurl,visitant_Isleave,visitant_Entry_Time,
+	visitant_Out_Time,visitant_Timestamp,using_Site_Id,
+	visitant_Found_Id,visitant_Notes,visitant_Num,visitant_Carno,
+	visitant_Unit_Id
+    </sql>
+    <select id="selectCount" parameterType="Map" resultType="java.lang.Integer">
+        select count(*) from visitant_message
+        <where>
+            <if test="hownum == 0">
+                visitant_entry_time like "%"#{time}"%"
+            </if>
+            <if test="hownum == 1">
+                visitant_entry_time like "%"#{time}"%" and visitant_isleave = 0
+            </if>
+            <if test="hownum == 2">
+                visitant_entry_time like "%"#{time}"%" and visitant_isleave = 1
+            </if>
+        </where>
+    </select>
+    <select id="selectVisitantMessages" parameterType="VisitantMessage" resultType="VisitantMessage">
+        select 
+         <include refid="select_visitantMessage_all" />  
+         from visitant_message
+         <where>
+             <if test="visitant_Name != null and visitant_Name != ''">
+                and visitant_Name like "%"#{visitant_Name}"%"
+            </if>
+            <if test="visitant_Cardno != null and visitant_Cardno != ''">
+                and visitant_Cardno like "%"#{visitant_Cardno}"%"
+            </if>
+            <if test="visitant_Entry_Time != null and visitant_Entry_Time != ''">
+                and visitant_Entry_Time like "%"#{visitant_Entry_Time}"%"
+            </if>
+            <if test="using_Site_Id != null and using_Site_Id != ''">
+                and using_Site_Id=#{using_Site_Id}
+            </if>
+            <if test="visitant_unit_id != null and visitant_unit_id != ''">
+                and visitant_unit_id=#{visitant_unit_id}
+            </if>
+         </where>
+    </select>
+    <select id="selectVisitantMessage" parameterType="VisitantMessage" resultType="VisitantMessage">
+        select 
+         <include refid="select_visitantMessage_all" />  
+         from visitant_message where visitant_Id=#{visitant_Id}
+    </select>
+    <insert id="addVisitantMessage" parameterType="VisitantMessage">
+        insert into visitant_message(
+        visitant_Name,visitant_Sex,visitant_Nation,
+		visitant_Cardtype,visitant_Cardno,visitant_Police,
+		visitant_Birth,visitant_Address,visitant_Companyname,
+		visitant_Matter,visitant_Surveyed_Id,visitant_Phone,
+		visitant_Headurl,visitant_Isleave,visitant_Entry_Time,
+		visitant_Timestamp,using_Site_Id,
+		visitant_Found_Id,visitant_Notes,visitant_Num,
+		visitant_Carno,visitant_Unit_Id) values(
+		#{visitant_Name},#{visitant_Sex},#{visitant_Nation},#{
+		visitant_Cardtype},#{visitant_Cardno},#{visitant_Police},#{
+		visitant_Birth},#{visitant_Address},#{visitant_Companyname},#{
+		visitant_Matter},#{visitant_Surveyed_Id},#{visitant_Phone},#{
+		visitant_Headurl},#{visitant_Isleave},#{visitant_Entry_Time},#{
+		visitant_Timestamp},#{using_Site_Id},#{visitant_Found_Id},
+		#{visitant_Notes},#{visitant_Num},#{visitant_Carno},
+		(select using_unit_id from using_site where using_site_id = #{using_Site_Id})
+		)
+    </insert>
+    <update id="updateVisitantMessage" parameterType="VisitantMessage">
+        update visitant_message 
+        <set>
+            <if test="visitant_Isleave != null and visitant_Isleave != ''">
+                visitant_Isleave=#{visitant_Isleave},
+            </if>
+            <if test="visitant_Out_Time != null and visitant_Out_Time != ''">
+                visitant_Out_Time=#{visitant_Out_Time},
+            </if>
+            <if test="visitant_Notes != null and visitant_Notes != ''">
+                visitant_Notes=#{visitant_Notes},
+            </if>
+        </set>
+        <where>
+             <if test="visitant_Timestamp != null and visitant_Timestamp != ''">
+                and visitant_Timestamp=#{visitant_Timestamp}
+            </if>
+            <if test="visitant_Cardno != null and visitant_Cardno != ''">
+                and visitant_Cardno=#{visitant_Cardno}
+            </if>
+            <if test="visitant_Id != null and visitant_Id != ''">
+                and visitant_Id=#{visitant_Id}
+            </if>
+         </where>
+    </update>
+    <delete id="deleteVisitantMessage" parameterType="VisitantMessage">
+        delete from visitant_message where visitant_Id=#{visitant_Id}
+    </delete>
+    <insert id="addVisitantMessages">
+        insert into visitant_message(
+        visitant_Name,visitant_Sex,visitant_Nation,
+		visitant_Cardtype,visitant_Cardno,visitant_Police,
+		visitant_Birth,visitant_Address,visitant_Companyname,
+		visitant_Matter,visitant_Surveyed_Id,visitant_Phone,
+		visitant_Headurl,visitant_Isleave,visitant_Entry_Time,
+		visitant_Timestamp,using_Site_Id,
+		visitant_Found_Id,visitant_Notes,visitant_Num,
+		visitant_Carno,visitant_Unit_Id)
+		values
+		<foreach collection="list" item="vm" separator =",">
+		    (#{vm.visitant_Name},#{vm.visitant_Sex},#{vm.visitant_Nation},#{
+			vm.visitant_Cardtype},#{vm.visitant_Cardno},#{vm.visitant_Police},#{
+			vm.visitant_Birth},#{vm.visitant_Address},#{vm.visitant_Companyname},#{
+			vm.visitant_Matter},#{vm.visitant_Surveyed_Id},#{vm.visitant_Phone},#{
+			vm.visitant_Headurl},#{vm.visitant_Isleave},#{vm.visitant_Entry_Time},#{
+			vm.visitant_Timestamp},#{vm.using_Site_Id},#{vm.visitant_Found_Id},
+			#{vm.visitant_Notes},#{vm.visitant_Num},#{vm.visitant_Carno},
+			(select using_unit_id from using_site where using_site_id = #{vm.using_Site_Id}))
+		</foreach>
+		
+    </insert>
+    <update id="updateVisitantMessages">
+        <foreach collection="list" separator=";" item="vm">
+			update visitant_message 
+        	<set>
+          	  <if test="visitant_Isleave != null and visitant_Isleave != ''">
+                visitant_Isleave=#{vm.visitant_Isleave},
+         	   </if>
+         	   <if test="visitant_Out_Time != null and visitant_Out_Time != ''">
+          	      visitant_Out_Time=#{vm.visitant_Out_Time},
+          	  </if>
+           		<if test="visitant_Notes != null and visitant_Notes != ''">
+                	visitant_Notes=#{vm.visitant_Notes},
+            	</if>
+        	</set>
+        	<where>
+            	<if test="visitant_Timestamp != null and visitant_Timestamp != ''">
+                	and visitant_Timestamp=#{vm.visitant_Timestamp}
+            	</if>
+            	<if test="visitant_Cardno != null and visitant_Cardno != ''">
+                	and visitant_Cardno=#{vm.visitant_Cardno}
+            	</if>
+            	<if test="visitant_Id != null and visitant_Id != ''">
+                	and visitant_Id=#{vm.visitant_Id}
+            	</if>
+         	</where>
+        </foreach>
+    </update>
+</mapper>

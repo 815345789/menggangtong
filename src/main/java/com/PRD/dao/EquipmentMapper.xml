@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.EquipmentDao">
+    <insert id="addEquipment" parameterType="Equipment">
+        insert into Equipment(equipment_Name,equipment_Num,using_Unit_Id,using_Site_Id) 
+        values(#{equipment_Name},#{equipment_Num},#{using_Unit_Id},#{using_Site_Id})
+    </insert>
+    <update id="updateEquipment" parameterType="Equipment">
+        update Equipment 
+        <set>
+            <if test="equipment_Name != null and equipment_Name != ''">
+                equipment_Name=#{equipment_Name},
+            </if>
+            <if test="equipment_Num != null and equipment_Num != ''">
+                equipment_Num=#{equipment_Num},
+            </if>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                using_Unit_Id=#{using_Unit_Id},
+            </if>
+            <if test="using_Site_Id != null and using_Site_Id != ''">
+                using_Site_Id=#{using_Site_Id},
+            </if>
+        </set>
+        where equipment_Id=#{equipment_Id}
+    </update>
+    <select id="selectEquipment" parameterType="Equipment" resultType="Equipment">
+        select e.equipment_Id,e.equipment_Name,e.equipment_Num,e.using_Unit_Id,e.using_Site_Id
+        from Equipment e
+        <where>
+            <if test="equipment_Id != null and equipment_Id != ''">
+                and equipment_Id = #{equipment_Id}
+            </if>
+            <if test="equipment_Num != null and equipment_Num != ''">
+                and equipment_Num = #{equipment_Num}
+            </if>
+        </where>
+    </select>
+    <select id="selectEquipments" parameterType="Equipment" resultType="Equipment">
+        select e.equipment_Id,e.equipment_Name,e.equipment_Num,e.using_Unit_Id,e.using_Site_Id
+        from Equipment e 
+        <where>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_Unit_Id = #{using_Unit_Id}
+            </if>
+            <if test="using_Site_Id != null and using_Site_Id != ''">
+                and using_Site_Id = #{using_Site_Id}
+            </if>
+            <if test="equipment_Name != null and equipment_Name != ''">
+                and equipment_Name = #{equipment_Name}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteEquipment" parameterType="Equipment">
+        delete from Equipment where equipment_Id=#{equipment_Id}
+    </delete>
+</mapper>

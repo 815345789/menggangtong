@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.ProvincesDao">
+    <select id="selectProvinces" parameterType="Provinces" resultType="Provinces">
+        select p.provinces_Id,p.provinces_Name
+        from Provinces p where provinces_Id=#{provinces_Id}
+    </select>
+    <select id="selectProvincess" parameterType="Provinces" resultType="Provinces">
+        select p.provinces_Id,p.provinces_Name
+        from Provinces p 
+        <where>
+            <if test="provinces_Name != null and provinces_Name != ''">
+                and provinces_Name like "%"#{provinces_Name}"%"
+            </if>
+        </where>
+    </select>
+</mapper>

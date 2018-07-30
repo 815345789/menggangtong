@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.CompanyDao">
+    <resultMap type="com.PRD.model.Company" id="CompanyResultMap">
+        <id column="company_Id" property="company_Id"/>
+          <result column="company_Name" property="company_Name"/>
+          <result column="company_Abbreviation" property="company_Abbreviation" />
+          <result column="company_Address" property="company_Address"/>
+          <result column="using_Site_Id" property="using_Site_Id" />
+          <result column="company_Notes" property="company_Notes" />
+          <result column="using_Unit_Id" property="using_Unit_Id" />
+          <collection property="depList" ofType="com.PRD.model.Department">
+             <id column="department_Id" property="department_Id"/>
+             <result column="company_Id" property="company_Id"/>
+             <result column="department_Name" property="department_Name"/>
+             <result column="department_Notes" property="department_Notes"/>
+         </collection>
+    </resultMap>
+    <insert id="addCompany" parameterType="Company" useGeneratedKeys="true" keyProperty="company_Id">
+         insert into company(company_name,company_abbreviation,company_address,using_site_id,company_notes,using_Unit_Id) 
+        values(#{company_Name},#{company_Abbreviation},#{company_Address},#{using_Site_Id},#{company_Notes},(select using_Unit_Id from using_site where using_Site_Id=#{using_Site_Id}))
+    </insert>
+    <update id="updateCompany" parameterType="Company">
+        update company 
+        <set>
+            <if test="company_Name != null and company_Name != ''">
+                company_Name=#{company_Name},
+            </if>
+            <if test="company_Abbreviation != null and company_Abbreviation != ''">
+                company_Abbreviation=#{company_Abbreviation},
+            </if>
+            <if test="company_Address != null and company_Address != ''">
+                company_Address=#{company_Address},
+            </if>
+            <if test="using_Site_Id != null and using_Site_Id != ''">
+                using_Site_Id=#{using_Site_Id},using_Unit_Id=(select using_Unit_Id from using_site where using_Site_Id=#{using_Site_Id}),
+            </if>
+            <if test="company_Notes != null and company_Notes != ''">
+                company_Notes=#{company_Notes},
+            </if>
+        </set>
+        where company_Id=#{company_Id}
+    </update>
+    <select id="selectCompany" parameterType="Company" resultType="Company">
+        select c.company_Id,c.company_Name,c.company_Abbreviation,c.company_Address,c.using_Site_Id,c.company_Notes,c.using_Unit_Id
+        from company c
+        <where>
+            <if test="company_Name != '' and company_Name != null">
+                and company_Name = #{company_Name}
+            </if>
+            <if test="company_Id != '' and company_Id != null">
+                and company_Id = #{company_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectCompanys" parameterType="Company" resultType="Company">
+        select c.company_Id,c.company_Name,c.company_Abbreviation,c.company_Address,c.using_Site_Id,c.company_Notes,c.using_Unit_Id
+        from company c 
+        <where>
+            <if test="company_Name != '' and company_Name != null">
+                and company_Name like "%"#{company_Name}"%"
+            </if>
+            <if test="company_Address != '' and company_Address != null">
+                and company_Address like "%"#{company_Address}"%"
+            </if>
+            <if test="using_Unit_Id != '' and using_Unit_Id != null">
+                and using_Unit_Id =#{using_Unit_Id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteCompany" parameterType="Company">
+        delete from company where company_Id=#{company_Id}
+    </delete>
+    <select id="selectCompanyResultMap" parameterType="Company" resultMap="CompanyResultMap">
+        select c.*,d.* from company c LEFT OUTER JOIN department d on c.company_Id = d.company_Id
+        <where>
+            <if test="company_Id != '' and company_Id != null">
+                and c.company_Id = #{company_Id}
+            </if>
+            <if test="using_Site_Id != '' and using_Site_Id != null">
+                and c.using_Site_Id = #{using_Site_Id}
+            </if>
+        </where>
+    </select>
+</mapper>

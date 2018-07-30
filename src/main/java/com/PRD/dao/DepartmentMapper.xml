@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.DepartmentDao">
+    <insert id="addDepartment" parameterType="Department"  useGeneratedKeys="true" keyProperty="department_Id">
+        insert into Department(company_Id,department_Name,department_Notes) 
+        values(#{company_Id},#{department_Name},#{department_Notes})
+    </insert>
+    <update id="updateDepartment" parameterType="Department">
+        update Department 
+        <set>
+            <if test="company_Id != null and company_Id != ''">
+                company_Id=#{company_Id},
+            </if>
+            <if test="department_Name != null and department_Name != ''">
+                department_Name=#{department_Name},
+            </if>
+            <if test="department_Notes != null and department_Notes != ''">
+                department_Notes=#{department_Notes},
+            </if>
+        </set>
+        where department_Id=#{department_Id}
+    </update>
+    <select id="selectDepartment" parameterType="Department" resultType="Department">
+        select d.department_Id,d.company_Id,d.department_Name,d.department_Notes
+        from Department d
+        <where>
+            <if test="department_Id != '' and department_Id != null">
+                and department_Id = #{department_Id}
+            </if>
+            <if test="department_Name != '' and department_Name != null">
+                and department_Name = #{department_Name}
+            </if>
+            <if test="company_Id != '' and company_Id != null">
+                and company_Id = #{company_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectDepartments" parameterType="Department" resultType="Department">
+        select d.department_Id,d.company_Id,d.department_Name,d.department_Notes
+        from Department d
+        <where>
+            <if test="department_Id != '' and department_Id != null">
+                and department_Id = #{department_Id}
+            </if>
+            <if test="department_Name != '' and department_Name != null">
+                and department_Name = #{department_Name}
+            </if>
+            <if test="company_Id != '' and company_Id != null">
+                and company_Id = #{company_Id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteDepartment" parameterType="Department">
+        delete from Department where department_Id=#{department_Id}
+    </delete>
+</mapper>

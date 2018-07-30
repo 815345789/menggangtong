@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.UsingSiteDao">
+    <insert id="addUsingSite" parameterType="UsingSite">
+        insert into Using_Site(using_Site_Name,using_Site_Address,using_Unit_Id) 
+        values(#{using_Site_Name},#{using_Site_Address},#{using_Unit_Id})
+    </insert>
+    <update id="updateUsingSite" parameterType="UsingSite">
+        update Using_Site 
+        <set>
+            <if test="using_Site_Name != null and using_Site_Name != ''">
+                using_Site_Name=#{using_Site_Name},
+            </if>
+            <if test="using_Site_Address != null and using_Site_Address != ''">
+                using_Site_Address=#{using_Site_Address},
+            </if>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                using_unit_id=#{using_Unit_Id},
+            </if>
+        </set>
+        where using_Site_Id=#{using_Site_Id}
+    </update>
+    <select id="selectUsingSite" parameterType="UsingSite" resultType="UsingSite">
+        select us.using_Site_Id,us.using_Site_Name,us.using_Site_Address,us.using_Unit_Id
+        from Using_Site us where using_Site_Id=#{using_Site_Id}
+    </select>
+    <select id="selectUsingSites" parameterType="UsingSite" resultType="UsingSite">
+        select us.using_Site_Id,us.using_Site_Name,us.using_Site_Address,us.using_Unit_Id
+        from Using_Site us 
+        <where>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_unit_id = #{using_Unit_Id}
+            </if>
+            <if test="using_Site_Name != null and using_Site_Name != ''">
+                and using_Site_Name like "%"#{using_Site_Name}"%"
+            </if>
+            <if test="using_Site_Address != null and using_Site_Address != ''">
+                and using_Site_Address like "%"#{using_Site_Address}"%"
+            </if>
+        </where>
+    </select>
+    <delete id="deleteUsingSite" parameterType="UsingSite">
+        delete from Using_Site where using_Site_Id=#{using_Site_Id}
+    </delete>
+</mapper>

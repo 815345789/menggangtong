@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.BlacklistDao">
+    <insert id="addBlacklist" parameterType="Blacklist">
+         insert into Blacklist(blacklist_Name,blacklist_sex,blacklist_Nation,blacklist_Cardno,blacklist_Phone,Using_Unit_Id,blacklist_Notes) 
+        values(#{blacklist_Name},#{blacklist_sex},#{blacklist_Nation},#{blacklist_Cardno},#{blacklist_Phone},#{Using_Unit_Id},#{blacklist_Notes})
+    </insert>
+    <update id="updateBlacklist" parameterType="Blacklist">
+        update Blacklist 
+        <set>
+            <if test="blacklist_Name != null and blacklist_Name != ''">
+                blacklist_Name=#{blacklist_Name},
+            </if>
+            <if test="blacklist_sex != null and blacklist_sex != ''">
+                blacklist_sex=#{blacklist_sex},
+            </if>
+            <if test="blacklist_Nation != null and blacklist_Nation != ''">
+                blacklist_Nation=#{blacklist_Nation},
+            </if>
+            <if test="blacklist_Cardno != null and blacklist_Cardno != ''">
+                blacklist_Cardno=#{blacklist_Cardno},
+            </if>
+            <if test="blacklist_Phone != null and blacklist_Phone != ''">
+                blacklist_Phone=#{blacklist_Phone},
+            </if>
+            <if test="blacklist_Notes != null and blacklist_Notes != ''">
+                blacklist_Notes=#{blacklist_Notes},
+            </if>
+        </set>
+        where blacklist_Id=#{blacklist_Id}
+    </update>
+    <select id="selectBlacklist" parameterType="Blacklist" resultType="Blacklist">
+        select b.blacklist_Id,b.blacklist_Name,b.blacklist_sex,b.blacklist_Nation,b.blacklist_Cardno,b.blacklist_Phone,b.Using_Unit_Id,b.blacklist_Notes
+        from Blacklist b  where blacklist_Id=#{blacklist_Id} 
+    </select>
+    <select id="selectBlacklists" parameterType="Blacklist" resultType="Blacklist">
+        select b.blacklist_Id,b.blacklist_Name,b.blacklist_sex,b.blacklist_Nation,b.blacklist_Cardno,b.blacklist_Phone,b.Using_Unit_Id,b.blacklist_Notes
+        from Blacklist b 
+        <where>
+            <if test="blacklist_Name != '' and blacklist_Name != null">
+                and blacklist_Name like "%"#{blacklist_Name}"%"
+            </if>
+            <if test="blacklist_Cardno != '' and blacklist_Cardno != null">
+                and blacklist_Cardno like "%"#{blacklist_Cardno}"%"
+            </if>
+            <if test="blacklist_Phone != '' and blacklist_Phone != null">
+                and blacklist_Phone like CONCAT('%',#{blacklist_Phone},'%')
+            </if>
+        </where>
+    </select>
+    <delete id="deleteBlacklist" parameterType="Blacklist">
+        delete from Blacklist where blacklist_Id=#{blacklist_Id}
+    </delete>
+    <insert id="addBiacklists" parameterType="Blacklist">
+         insert into Blacklist(blacklist_Name,blacklist_sex,blacklist_Nation,blacklist_Cardno,blacklist_Phone,Using_Unit_Id,blacklist_Notes) 
+        values
+        <foreach collection="blists" item="blists" separator=",">
+        	(#{blists.blacklist_Name},#{blists.blacklist_sex},#{blists.blacklist_Nation},#{blists.blacklist_Cardno},#{blists.blacklist_Phone},#{blists.Using_Unit_Id},#{blists.blacklist_Notes})
+        </foreach>
+    </insert>
+</mapper>

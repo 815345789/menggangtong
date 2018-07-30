@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.UserMessageDao">
+    <insert id="addUser" parameterType="UserMessage">
+        insert into user_message(username,usermessage_name,password,using_unit_id,found_id,power_Num) 
+        values(#{username},#{usermessage_name},#{password},#{using_Unit_Id},#{found_Id},#{power_Num})
+    </insert>
+    <update id="updateUser" parameterType="UserMessage">
+        update user_message 
+        <set>
+            <if test="username != null and username != ''">
+                username=#{username},
+            </if>
+            <if test="password != null and password != ''">
+                password=#{password},
+            </if>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                using_unit_id=#{using_Unit_Id},
+            </if>
+            <if test="power_Num != null and power_Num != ''">
+                power_Num=#{power_Num},
+            </if>
+            <if test="usermessage_name != null and usermessage_name != ''">
+                usermessage_name=#{usermessage_name},
+            </if>
+        </set>
+        where user_id=#{user_Id}
+    </update>
+    <select id="selectUser" parameterType="UserMessage" resultType="UserMessage">
+        select um.user_id,um.username,um.usermessage_name,um.password,um.using_unit_id,um.found_id,um.power_Num
+        from user_message um
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="user_Id != null and user_Id != ''">
+                and user_Id = #{user_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectUsers" parameterType="UserMessage" resultType="UserMessage">
+        select um.user_id,um.username,um.usermessage_name,um.password,um.using_unit_id,um.found_id,um.power_Num
+        from user_message um 
+        <where>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_unit_id = #{using_Unit_Id}
+            </if>
+            <if test="found_Id != null and found_Id != ''">
+                and found_id = #{found_Id}
+            </if>
+            <if test="power_Num != null and power_Num != ''">
+                and power_id = #{power_Num}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteUser" parameterType="UserMessage">
+        delete from user_message where user_id=#{user_Id}
+    </delete>
+</mapper>

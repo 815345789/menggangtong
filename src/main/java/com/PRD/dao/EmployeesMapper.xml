@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.EmployeesDao">
+    <resultMap type="com.PRD.model.Employees" id="employeesResultMap">
+         <!-- 配置订单的映射信息 -->
+         <!-- 
+             id:指定查询列中的唯一标识，订单信息中的唯一标识，若有多个列组成唯一标识，需配置多个id
+             column: 订单信息的唯一标识列
+             property: 订单信息的唯一标识列所映射到的 Orders的对应的属性
+          -->
+          <id column="employees_Id" property="employees_Id"/>
+          <result column="department_Id" property="department_Id"/>
+          <result column="employees_Name" property="employees_Name" />
+          <result column="employees_Phone" property="employees_Phone"/>
+          <result column="employees_Plane" property="employees_Plane" />
+          <result column="employees_Job" property="employees_Job" />
+          <result column="employees_Sex" property="employees_Sex" />
+          
+          <!-- 配置映射的关联的用户信息 -->
+          <!-- association：用于映射关联查询单个对象的信息
+              property：要将关联查询的用户信息映射到Orders中的对应属性
+           -->
+          <association property="company" javaType="com.PRD.model.Company">
+               <!-- 
+                   id：关联查询用户的唯一标识
+                   column：指定唯一标识用户信息的列
+                   javaType：映射到user的对应属性
+                -->
+                <id column="company_Id" property="company_Id"/>
+                <result column="company_Name" property="company_Name"/>
+                <result column="company_Abbreviation" property="company_Abbreviation"/>
+                <result column="company_Address" property="company_Address"/>
+                <result column="using_Site_Id" property="using_Site_Id"/>
+                <result column="company_Notes" property="company_Notes"/>
+                <result column="using_Unit_Id" property="using_Unit_Id"/>
+           </association>
+           <association property="department" javaType="com.PRD.model.Department">
+                <id column="department_Id" property="department_Id"/>
+                <result column="company_Id" property="company_Id"/>
+                <result column="department_Name" property="department_Name"/>
+                <result column="department_Notes" property="department_Notes"/>
+           </association>
+     </resultMap>
+    <insert id="addEmployees" parameterType="Employees">
+        insert into Employees(department_Id,employees_Name,employees_Phone,employees_Plane,employees_Job,employees_Sex) 
+        values(#{department_Id},#{employees_Name},#{employees_Phone},#{employees_Plane},#{employees_Job},#{employees_Sex})
+    </insert>
+    <update id="updateEmployees" parameterType="Employees">
+        update Employees 
+        <set>
+            <if test="department_Id != null and department_Id != ''">
+                department_Id=#{department_Id},
+            </if>
+            <if test="employees_Name != null and employees_Name != ''">
+                employees_Name=#{employees_Name},
+            </if>
+            <if test="employees_Phone != null and employees_Phone != ''">
+                employees_Phone=#{employees_Phone},
+            </if>
+            <if test="employees_Plane != null and employees_Plane != ''">
+                employees_Plane=#{employees_Plane},
+            </if>
+            <if test="employees_Job != null and employees_Job != ''">
+                employees_Job=#{employees_Job},
+            </if>
+            <if test="employees_Sex != null and employees_Sex != ''">
+                employees_Sex=#{employees_Sex},
+            </if>
+        </set>
+        where employees_Id=#{employees_Id}
+    </update>
+    <select id="selectEmployees" parameterType="Employees" resultType="Employees">
+        select e.employees_Id,e.department_Id,e.employees_Name,e.employees_Phone,e.employees_Plane,e.employees_Job,e.employees_Sex
+        from Employees e
+        <where>
+            <if test="employees_Name != null and employees_Name != ''">
+                and employees_Name = #{employees_Name}
+            </if>
+            <if test="employees_Phone != null and employees_Phone != ''">
+                and employees_Phone = #{employees_Phone}
+            </if>
+            <if test="department_Id != null and department_Id != ''">
+                and department_Id = #{department_Id}
+            </if>
+            <if test="employees_Id != null and employees_Id != ''">
+                and employees_Id = #{employees_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectEmployeess" parameterType="Employees" resultType="Employees">
+        select e.employees_Id,e.department_Id,e.employees_Name,e.employees_Phone,e.employees_Plane,e.employees_Job,e.employees_Sex
+        from Employees e 
+        <where>
+            <if test="employees_Name != null and employees_Name != ''">
+                and employees_Name = #{employees_Name}
+            </if>
+            <if test="employees_Phone != null and employees_Phone != ''">
+                and employees_Phone = #{employees_Phone}
+            </if>
+            <if test="employees_Plane != null and employees_Plane != ''">
+                and employees_Plane = #{employees_Plane}
+            </if>
+        </where>
+    </select>
+    <select id="selectEmployeessResultMap" parameterType="Employees" resultMap="employeesResultMap">
+        select c.*,d.*,e.* from company c,department d,employees e where c.company_id = d.company_id and d.department_id = e.department_id
+        	<if test="employees_Name != null and employees_Name != ''">
+                and e.employees_Name = #{employees_Name}
+            </if>
+            <if test="employees_Phone != null and employees_Phone != ''">
+                and e.employees_Phone = #{employees_Phone}
+            </if>
+    </select>
+    <select id="selectEmployeesResultMap" parameterType="Employees" resultMap="employeesResultMap">
+        select c.*,d.*,e.* from company c,department d,employees e where c.company_id = d.company_id and d.department_id = e.department_id and e.employees_id = #{employees_Id}
+    </select>
+    <delete id="deleteEmployees" parameterType="Employees">
+        delete from Employees where employees_Id=#{employees_Id}
+    </delete>
+</mapper>

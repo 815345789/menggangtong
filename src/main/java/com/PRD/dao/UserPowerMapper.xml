@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.UserPowerDao">
+    <insert id="addUserPower" parameterType="UserPower">
+        insert into User_Power(power_Num,power_Name) 
+        values(#{power_Num},#{power_Name})
+    </insert>
+    <update id="updateUserPower" parameterType="UserPower">
+        update User_Power 
+        <set>
+            <if test="power_Num != null and power_Num != ''">
+                power_Num=#{power_Num},
+            </if>
+            <if test="power_Name != null and power_Name != ''">
+                power_Name=#{power_Name},
+                </if>
+        </set>
+        where power_Id=#{power_Id}
+    </update>
+    <select id="selectUserPower" parameterType="UserPower" resultType="UserPower">
+        select up.power_Id,up.power_Num,up.power_Name
+        from User_Power up where power_Id=#{power_Id}
+    </select>
+    <select id="selectUserPowers" parameterType="UserPower" resultType="UserPower">
+        select up.power_Id,up.power_Num,up.power_Name
+        from User_Power up 
+        <where>
+            <if test="power_Name != null and power_Name != ''">
+                and power_Name = #{power_Name}
+            </if>
+            <if test="power_Num != null and power_Num != ''">
+                and power_Num = #{power_Num}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteUserPower" parameterType="UserPower">
+        delete from User_Power where power_Id=#{power_Id}
+    </delete>
+</mapper>

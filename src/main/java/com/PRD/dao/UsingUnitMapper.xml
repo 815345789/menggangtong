@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.UsingUnitDao">
+    <insert id="addUsingUnit" parameterType="UsingUnit">
+        insert into Using_Unit(using_Unit_Name,city_Id) 
+        values(#{using_Unit_Name},#{city_Id})
+    </insert>
+    <update id="updateUsingUnit" parameterType="UsingUnit">
+        update Using_Unit 
+        <set>
+            <if test="using_Unit_Name != null and using_Unit_Name != ''">
+                using_Unit_Name=#{using_Unit_Name},
+            </if>
+            <if test="city_Id != null and city_Id != ''">
+                city_Id=#{city_Id},
+            </if>
+        </set>
+        where using_Unit_Id=#{using_Unit_Id}
+    </update>
+    <select id="selectUsingUnit" parameterType="UsingUnit" resultType="UsingUnit">
+        select uu.using_Unit_Id,uu.using_Unit_Name,uu.city_Id
+        from Using_Unit uu
+        <where>
+            <if test="using_Unit_Name != null and using_Unit_Name != ''">
+                and using_Unit_Name = #{using_Unit_Name}
+            </if>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_Unit_Id = #{using_Unit_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectUsingUnits" parameterType="UsingUnit" resultType="UsingUnit">
+        select uu.using_Unit_Id,uu.using_Unit_Name,uu.city_Id
+        from Using_Unit uu 
+        <where>
+            <if test="using_Unit_Name != null and using_Unit_Name != ''">
+                and using_Unit_Name like "%"#{using_Unit_Name}"%"
+            </if>
+            <if test="city_Id != null and city_Id != ''">
+                and city_Id = #{city_Id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteUsingUnit" parameterType="UsingUnit">
+        delete from Using_Unit where using_Unit_Id=#{using_Unit_Id}
+    </delete>
+</mapper>

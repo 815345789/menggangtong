@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.PRD.dao.FeedbackDao">
+    <insert id="addFeedback" parameterType="Feedback">
+        insert into Feedback(using_Unit_Id,feedback_Notes) 
+        values(#{using_Unit_Id},#{feedback_Notes})
+    </insert>
+    <update id="updateFeedback" parameterType="Feedback">
+        update Feedback 
+        <set>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                using_Unit_Id=#{using_Unit_Id},
+            </if>
+            <if test="feedback_Notes != null and feedback_Notes != ''">
+                feedback_Notes=#{feedback_Notes},
+            </if>
+        </set>
+        where feedback_Id=#{feedback_Id}
+    </update>
+    <select id="selectFeedback" parameterType="Feedback" resultType="Feedback">
+        select f.feedback_Id,f.using_Unit_Id,f.feedback_Notes
+        from Feedback f
+        <where>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_Unit_Id = #{using_Unit_Id}
+            </if>
+            <if test="feedback_Id != null and feedback_Id != ''">
+                and feedback_Id = #{feedback_Id}
+            </if>
+        </where>
+    </select>
+    <select id="selectFeedbacks" parameterType="Feedback" resultType="Feedback">
+        select f.feedback_Id,f.using_Unit_Id,f.feedback_Notes
+        from Feedback f
+        <where>
+            <if test="using_Unit_Id != null and using_Unit_Id != ''">
+                and using_Unit_Id = #{using_Unit_Id}
+            </if>
+            <if test="feedback_Id != null and feedback_Id != ''">
+                and feedback_Id = #{feedback_Id}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteFeedback" parameterType="Feedback">
+        delete from Feedback where feedback_Id=#{feedback_Id}
+    </delete>
+</mapper>
